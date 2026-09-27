@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fractal Explorer</title>
+  <style>
+    :root {
+      --panel-bg: rgba(16, 18, 24, 0.82);
+      --panel-fg: #e6e8ee;
+      --muted: #9aa0ad;
+      --accent: #6aa8ff;
+      --border: rgba(255, 255, 255, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    body { font: 13px/1.4 system-ui, -apple-system, sans-serif; color: var(--panel-fg); }
+
+    #view {
+      position: fixed; inset: 0; width: 100vw; height: 100vh;
+      display: block; cursor: grab; touch-action: none;
+    }
+    #view.dragging { cursor: grabbing; }
+
+    #panel {
+      position: fixed; top: 12px; left: 12px; width: 270px;
+      padding: 12px 14px; border-radius: 10px;
+      background: var(--panel-bg); border: 1px solid var(--border);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      user-select: none;
+    }
+    #panel.collapsed .body { display: none; }
+    #panel h1 {
+      margin: 0; font-size: 14px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    #toggle {
+      background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 16px; padding: 0 2px;
+    }
+    .row { margin-top: 10px; }
+    .row label { display: flex; justify-content: space-between; color: var(--muted); margin-bottom: 4px; }
+    .row label output { color: var(--panel-fg); font-variant-numeric: tabular-nums; }
+    select, input[type=number], button.btn {
+      width: 100%; padding: 5px 8px; border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06); color: var(--panel-fg);
+      border: 1px solid var(--border); font: inherit;
+    }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+    .inline { display: flex; gap: 8px; align-items: center; }
+    .inline input[type=number] { flex: 1; }
+    .inline label { margin: 0; color: var(--muted); display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+    button.btn { cursor: pointer; }
+    button.btn:hover { border-color: var(--accent); }
+
+    #stats {
+      margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);
+      font: 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted);
+      word-break: break-all;
+    }
+    #stats b { color: var(--panel-fg); font-weight: 500; }
+    #stats .warn { color: #ffb454; }
+    .help { margin-top: 10px; color: var(--muted); font-size: 11px; }
+  </style>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="panel">
+    <h1>Fractal Explorer <button id="toggle" title="Collapse panel (H)">–</button></h1>
+    <div class="body">
+      <div class="row">
+        <label for="fractal">Fractal</label>
+        <select id="fractal"></select>
+      </div>
+      <div class="row">
+        <label for="palette">Palette</label>
+        <select id="palette"></select>
+      </div>
+      <div class="row">
+        <label for="cycle"><span id="cycle-label">Color cycle</span> <output id="cycle-out"></output></label>
+        <input id="cycle" type="range" min="3" max="10" step="0.1" value="6">
+      </div>
+      <div class="row">
+        <label for="iters">Max iterations</label>
+        <div class="inline">
+          <input id="iters" type="number" min="16" max="100000" step="1" value="500">
+          <label><input id="auto-iters" type="checkbox" checked> auto</label>
+        </div>
+      </div>
+      <div class="row">
+        <button id="reset" class="btn">Reset view (R)</button>
+      </div>
+      <div id="stats"></div>
+      <div class="help">
+        Drag to pan · scroll or pinch to zoom<br>
+        Double-click to zoom in, Shift+double-click out
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

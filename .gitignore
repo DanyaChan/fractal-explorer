@@ -1,0 +1,3 @@
+build/
+# Built by `make` locally and by CI for Pages.
+web/fractals.wasm
